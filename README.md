@@ -1,31 +1,38 @@
-# Product Portfolio Rationalisation in Manufacturing
+# Portfolio Rationalization Framework (Manufacturing)
 
-This project implements the methodology proposed by *Giovannini et al. (2014)* regarding the rationalisation of product lines in mass customisation manufacturing.
+### "The right level of customisation isn't about how much we *can* build, but how much we *should* build."
 
-## Overview
+This project is a technical implementation of a product-line rationalization system. It bridges the gap between customer needs (Marketing) and technical specifications (Engineering) to find the "Just Right" balance of variety.
 
-The core objective is to link each product variant to the specific customer profile that needs it, avoiding:
-- **Lacks**: Customers whose needs are not met by any variant.
-- **Redundancies**: Multiple variants proposed for the same customer need.
-- **Excesses**: Variants not related to any customer segment.
+## 🧠 The Core Idea
+In manufacturing, variety is expensive. Every extra variant adds complexity to the shop floor, the warehouse, and the supply chain. This tool helps identify:
+1.  **Gaps (Lacks)**: Market opportunities we're currently missing.
+2.  **Waste (Excess)**: Product variants that don't satisfy any unique customer segment and should be retired.
+3.  **Core Variety ($V^*$)**: The absolute minimum number of products needed to satisfy 100% of the possible demand.
 
-## Features
+## 🚀 Getting Started
+I've designed this to be straightforward to set up.
 
-- **Market Analysis Dashboard**: Visualises customer needs vs product capabilities.
-- **Rationalisation Engine**: Identifies coverage gaps and wasteful excess in the portfolio.
-- **Scenario Simulator**: Allows "What-if" analysis for introducing new products or removing old ones.
-- **Premium UI**: Dark-themed, interactive Streamlit dashboard.
+```bash
+# Clone the repository
+git clone https://github.com/talktoarusharya/Product-portfolio-rationalisation-in-Manufacturing
+cd Product-portfolio-rationalisation-in-Manufacturing
 
-## Installation
+# Install the necessary libraries
+pip install -r requirements.txt
 
-1. Install dependencies:
-   ```bash
-   git clone https://github.com/talktoarusharya/Product-portfolio-rationalisation-in-Manufacturing
-   cd Product-portfolio-rationalisation-in-Manufacturing
-   pip install -r requirements.txt
-   python generate_data.py
-   streamlit run app.py
-   ```
+# Reset/Prepare the data twin
+python generate_data.py
 
-## Case Study: Fan-Coil Units
-The application includes a demonstration based on industrial fan-coil units, focusing on parameters like static pressure and sensible cooling power.
+# Launch my analysis dashboard
+streamlit run app.py
+```
+
+## 📐 Implementation Logic
+I based this on the research from *Giovannini et al.*, focusing on three specific algorithms:
+-   **Structure**: Building an interaction tree that maps "What the customer wants" to "What we build."
+-   **Definition**: Calculating the ideal product space ($V^*$) to bound our portfolio.
+-   **Rationalization**: A spatial audit that flags overlaps and redundancies using economic and sustainability criteria.
+
+## 📊 Outputs
+The dashboard provides a detailed executive report with **Action Items**, allowing you to export specific retirement lists for manufacturing and R&D gap plans for product development.

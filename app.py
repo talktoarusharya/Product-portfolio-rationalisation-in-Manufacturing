@@ -3,240 +3,188 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-import requests
-from streamlit_lottie import st_lottie
-from logic import analyze_coverage
+from logic import analyze_coverage, engine
 
-# --- 🚀 Performance Optimization (Skill 6) ---
-@st.cache_data
-def get_analysis(df_cust, df_prod):
-    return analyze_coverage(df_cust, df_prod)
-
-def load_lottieurl(url: str):
-    try:
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
-    except:
-        return None
-
-# --- 🧠 UI/UX Architecture (Skill 1) ---
+# --- Classy Personal Theme ---
 st.set_page_config(
-    page_title="Portfolio Wellness Pro",
-    page_icon="🏭",
-    layout="wide",
+    page_title="Portfolio Optimization Framework",
+    page_icon="📋",
+    layout="centered",
 )
 
-# --- 🎨 Advanced Styling (Skill 2) ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
     
-    html, body, [class*="css"]  {
-        font-family: 'Outfit', sans-serif;
-    }
-    
-    .stApp {
-        background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 27, 75) 100%);
-        color: #f8fafc;
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+        background-color: #fcfaf7;
+        color: #2c3e50;
     }
     
-    /* 🧊 Glossy Glass Cards */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(16px);
-        padding: 24px;
-        border-radius: 24px;
-        margin-bottom: 24px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    h1, h2, .personal-header {
+        font-family: 'Lora', serif;
+        color: #1a2a3a;
+        font-weight: 700;
     }
     
-    .glass-card:hover {
-        border: 1px solid rgba(99, 102, 241, 0.5);
-        transform: translateY(-8px) scale(1.01);
-        box-shadow: 0 20px 40px -15px rgba(0,0,0,0.6);
+    .personal-header {
+        font-size: 2.8rem;
+        border-bottom: 2px solid #1a2a3a;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
     }
     
-    /* 🌈 Typography */
-    .hero-text {
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #fb7185 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 4rem;
-        font-weight: 800;
-        letter-spacing: -1.5px;
-        line-height: 1.1;
-        margin-bottom: 1rem;
+    .intro-text {
+        font-family: 'Lora', serif;
+        font-style: italic;
+        font-size: 1.1rem;
+        color: #5d6d7e;
+        margin-bottom: 2rem;
     }
     
-    .kpi-val {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(to bottom, #ffffff, #94a3b8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .section-break {
+        margin: 3rem 0 1.5rem 0;
+        text-align: left;
+        border-bottom: 1px solid #dcdde1;
+        font-family: 'Lora', serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
     }
     
-    /* 🔘 Interactive Elements */
-    .stButton>button {
-        border-radius: 12px;
-        padding: 0.6rem 2rem;
-        background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
-        color: white;
-        border: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
+    .metric-bubble {
+        padding: 15px;
+        border-left: 2px solid #1a2a3a;
+        margin-bottom: 10px;
     }
-    .stButton>button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-    }
+    
+    .metric-title { font-size: 0.8rem; text-transform: uppercase; color: #7f8c8d; }
+    .metric-value { font-family: 'Lora', serif; font-size: 2rem; color: #1a2a3a; font-weight: 700; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- 🔄 Stateful Application Design (Skill 4) ---
-if 'data_initialized' not in st.session_state:
-    st.session_state.data_initialized = False
+# --- Data Loading ---
+@st.cache_data
+def load_and_analyze():
+    try:
+        df_c = pd.read_csv('customers.csv')
+        df_p = pd.read_csv('products.csv')
+        res = analyze_coverage(df_c, df_p)
+        return df_c, df_p, res
+    except:
+        return None, None, None
 
-# --- 🖼️ Header Section ---
-header_col1, header_col2 = st.columns([3, 1])
-with header_col1:
-    st.markdown('<div class="hero-text">Intelligent <br>Portfolio Rationalizer</div>', unsafe_allow_html=True)
-    st.markdown("#### *Engineering the perfect match between customer demand and product variety.*")
-with header_col2:
-    lottie_fac = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_z9ed2jna.json")
-    if lottie_fac:
-        st_lottie(lottie_fac, height=250)
+df_c, df_p, res = load_and_analyze()
 
-# --- 📂 Data Management (Skill 8) ---
-def check_data_exists():
-    import os
-    return os.path.exists('customers.csv') and os.path.exists('products.csv')
+if df_c is None:
+    st.error("No data found. Please run the generation script first.")
+    st.stop()
 
-if not check_data_exists() and not st.session_state.data_initialized:
-    st.markdown("""
-    <div class="glass-card">
-        <h3>🔍 System Readiness Check</h3>
-        <p>No manufacturing data detected in the workspace. Initialize the Digital Twin to proceed.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("🚀 Initialize Portfolio Digital Twin", type="primary"):
-        import generate_data
-        generate_data.generate_sample_data()
-        st.session_state.data_initialized = True
-        st.rerun()
-else:
-    # --- 📊 Dashboard Content ---
-    df_cust = pd.read_csv('customers.csv')
-    df_prod = pd.read_csv('products.csv')
-    
-    results = get_analysis(df_cust, df_prod)
-    lacks = results['lacks']
-    excess = results['excess']
-    
-    # --- 📈 Metrics Row (Skill 5) ---
-    m1, m2, m3, m4 = st.columns(4)
-    with m1:
-        st.markdown(f'<div class="glass-card"><div class="kpi-label">Market Coverage</div><div class="kpi-val">{100 - (len(lacks)/len(df_cust)*100):.1f}%</div></div>', unsafe_allow_html=True)
-    with m2:
-        st.markdown(f'<div class="glass-card"><div class="kpi-label">Portfolio Leaness</div><div class="kpi-val">{len(df_prod)-len(excess)}/{len(df_prod)}</div></div>', unsafe_allow_html=True)
-    with m3:
-        st.markdown(f'<div class="glass-card"><div class="kpi-label">Supply Gaps</div><div class="kpi-val">{len(lacks)}</div></div>', unsafe_allow_html=True)
-    with m4:
-        st.markdown(f'<div class="glass-card"><div class="kpi-label">Optimization Win</div><div class="kpi-val">${len(excess)*450}k</div></div>', unsafe_allow_html=True)
+# --- Main Interface ---
 
-    # --- 🧩 Interactive Tabs (Skill 3) ---
-    tabs = st.tabs(["🚀 Market Intelligence", "🛠️ Rationalization Hub", "🎭 Scenario Simulation", "📖 Science & Methods"])
-    
-    with tabs[0]:
-        st.markdown("### 🗺️ Visualizing the Opportunity Space")
-        fig = go.Figure()
-        
-        # Add Heatmap area for "Ideal" coverage if possible, or just scatter
-        fig.add_trace(go.Scatter(
-            x=df_cust['Req_StaticPressure_Pa'], y=df_cust['Req_SensiblePower_kW'],
-            mode='markers', name='Target Demand',
-            marker=dict(size=12, color='#818cf8', opacity=0.3, line=dict(width=1, color='white')),
-            text=df_cust['CustomerID']
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=df_prod['Cap_StaticPressure_Pa'], y=df_prod['Cap_SensiblePower_kW'],
-            mode='markers', name='Installed Portfolio',
-            marker=dict(size=16, color='#fb7185', symbol='diamond', line=dict(width=2, color='white')),
-            text=df_prod['ProductID']
-        ))
-        
-        fig.update_layout(
-            template="plotly_dark",
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-            xaxis=dict(title="Static Pressure (Pa)", gridcolor='rgba(255,255,255,0.05)'),
-            yaxis=dict(title="Sensible Power (kW)", gridcolor='rgba(255,255,255,0.05)'),
-            margin=dict(l=0, r=0, t=20, b=0),
-            height=600
-        )
-        st.plotly_chart(fig, width="stretch")
+st.markdown('<div class="personal-header">Portfolio Rationalisation Report</div>', unsafe_allow_html=True)
+st.markdown('<div class="intro-text">A strategic breakdown of our product line vs. what our customers actually need.</div>', unsafe_allow_html=True)
 
-    with tabs[1]:
-        col_l, col_r = st.columns(2)
-        with col_l:
-            st.markdown("""
-            <div class="glass-card" style="border-left: 5px solid #fb7185;">
-                <h4>📉 Wasteful Excess (Candidate for Retirement)</h4>
-                <p>These models satisfy zero current customers. Retiring them reduces inventory overhead.</p>
-            </div>
-            """, unsafe_allow_html=True)
-            st.dataframe(excess[['ProductID', 'Cap_StaticPressure_Pa', 'Cap_SensiblePower_kW', 'UnitCost']], width="stretch")
-            
-        with col_r:
-            st.markdown("""
-            <div class="glass-card" style="border-left: 5px solid #818cf8;">
-                <h4>📈 Supply Lacks (Opportunity for Innovation)</h4>
-                <p>These requirements are currently ignored. New product development should target these coordinates.</p>
-            </div>
-            """, unsafe_allow_html=True)
-            st.dataframe(lacks[['CustomerID', 'Req_StaticPressure_Pa', 'Req_SensiblePower_kW']], width="stretch")
+# 1. Dashboard Overview
+st.markdown('<div class="section-break">I. Key Insights</div>', unsafe_allow_html=True)
+st.write("I've analyzed the entire dataset to see how well our current products match up with the market demand. Here's a high-level look at where we stand:")
 
-    with tabs[2]:
-        st.markdown("### 🔮 Portfolio Evolution Lab")
-        st.write("Simulate the impact of adding a new variant to your manufacturing lineage.")
-        
-        with st.container():
-            c1, c2, c3 = st.columns([1,1,1])
-            with c1:
-                s_p = st.number_input("Target Pressure (Pa)", 0, 100, 50)
-            with c2:
-                s_w = st.number_input("Target Power (kW)", 0.0, 20.0, 5.0)
-            with c3:
-                st.write("###")
-                if st.button("⚡ Simulate ROI"):
-                    new_item = pd.DataFrame([{
-                        'ProductID': 'SIM-PRO-1', 'Cap_StaticPressure_Pa': s_p,
-                        'Cap_SensiblePower_kW': s_w, 'Efficiency': 0.9, 'UnitCost': 550
-                    }])
-                    new_prod_df = pd.concat([df_prod, new_item], ignore_index=True)
-                    sim_results = analyze_coverage(df_cust, new_prod_df)
-                    improv = len(lacks) - len(sim_results['lacks'])
-                    
-                    if improv > 0:
-                        st.balloons()
-                        st.success(f"**Impact Detected!** This addition captures **{improv}** additional customers ({improv/len(df_cust)*100:.1f}% market growth).")
-                    else:
-                        st.error("**Inefficient Addition:** This variant provides no new coverage. Current products already serve this segment.")
+m1, m2, m3 = st.columns(3)
+with m1:
+    st.markdown('<div class="metric-bubble">', unsafe_allow_html=True)
+    st.markdown('<div class="metric-title">Market Reach</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-value">{(1-len(res["lacks"])/len(df_c))*100:.1f}%</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+with m2:
+    st.markdown('<div class="metric-bubble">', unsafe_allow_html=True)
+    st.markdown('<div class="metric-title">Essential Items ($V^*$)</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-value">{res["optimal_portfolio_size"]}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+with m3:
+    st.markdown('<div class="metric-bubble">', unsafe_allow_html=True)
+    st.markdown('<div class="metric-title">Excess Count</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-value">{len(res["excess"])}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    with tabs[3]:
-        st.markdown("## 🧠 Scientific Methodology")
-        st.markdown("""
-        This platform implements the **Product Variety Rationalisation** approach by *Giovannini et al. (2014)*.
-        
-        #### 🏗️ The 3 Pillar Algorithm:
-        1. **Interaction Trees**: Decomposing high-level customer purposes into leaf-level engineering variables.
-        2. **V* Space Definition**: Mathematically defining the smallest subset of variety that preserves 100% customer satisfaction.
-        3. **Rationalization Audit**: Continuous auditing of 'Excess' vs 'Lacks' using digital twin synchronization.
-        """)
-        st.image("https://img.icons8.com/wired/512/FFFFFF/factory.png", width=100) # Placeholder for more cool visuals
+st.write("##")
+pct_excess = int(len(res['excess'])/len(df_p)*100)
+st.write(f"The numbers show that about **{pct_excess}% of our variants** aren't actually needed for the segments we're targeting. We can significantly simplify things while keeping 100% of our current sales potential.")
 
-st.markdown("---")
-st.markdown("<div style='text-align: center; color: #64748b;'>Built with Advanced Streamlit Frontend Engineering skill-set.</div>", unsafe_allow_html=True)
+# 2. Behind the math
+st.markdown('<div class="section-break">II. How the logic works</div>', unsafe_allow_html=True)
+st.write("To get these results, I built a logic tree that breaks down the purpose of 'Room Air Cooling' into technical specs. It links what the customer feels (Temperature) to what we build (Coil Area, Fans, etc.).")
+
+tree = engine.algorithm_1_retrieve_tree("Room Air Cooling")
+for inter in tree['interactions']:
+    st.markdown(f"**Step {inter['level']}:** {inter['name']}")
+    st.write(f"This part maps {', '.join(inter['inputs'])} to get the **{inter['output']}**.")
+
+# 3. Visual Mapping
+st.markdown('<div class="section-break">III. Mapping the landscape</div>', unsafe_allow_html=True)
+st.write("This chart helps visualize the overlap. The dark squares are the essential products ($V^*$) we should keep. The gray circles are essentially dead weight—products that don't uniquely satisfy any customer segment better than our core set.")
+
+fig = go.Figure()
+# Core
+fig.add_trace(go.Scatter(
+    x=res['product_results'][res['product_results']['InOptimalSet']]['Cap_StaticPressure_Pa'], 
+    y=res['product_results'][res['product_results']['InOptimalSet']]['Cap_SensiblePower_kW'],
+    mode='markers', name='Products to Keep (V*)',
+    marker=dict(size=14, color='#1a2a3a', symbol='square', line=dict(width=1, color='#fcfaf7'))
+))
+# Excess
+fig.add_trace(go.Scatter(
+    x=res['excess']['Cap_StaticPressure_Pa'], 
+    y=res['excess']['Cap_SensiblePower_kW'],
+    mode='markers', name='Excess/Redundant',
+    marker=dict(size=10, color='#dcdde1', symbol='circle', opacity=0.4)
+))
+
+fig.update_layout(
+    template="simple_white", paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+    height=550,
+    xaxis=dict(title="Static Pressure (Pa)"),
+    yaxis=dict(title="Sensible Power (kW)"),
+    legend=dict(orientation="h", yanchor="bottom", y=1.05, xanchor="left", x=0)
+)
+st.plotly_chart(fig, use_container_width=True)
+
+# 4. Detailed Breakdown
+st.markdown('<div class="section-break">IV. Action Items</div>', unsafe_allow_html=True)
+st.write("Based on the data, here are my specific recommendations for our next product cycle. You can export these lists for the manufacturing and R&D teams below.")
+
+c1, c2 = st.columns(2)
+with c1:
+    csv_excess = res['excess'][['ProductID', 'Cap_SensiblePower_kW', 'UnitCost']].to_csv(index=False).encode('utf-8')
+    st.download_button(
+        "📄 Export Retirement List (Excess)",
+        csv_excess,
+        "retirement_plan.csv",
+        "text/csv",
+        help="List of variants to be rationalized to reduce inventory overhead."
+    )
+with c2:
+    csv_lacks = res['lacks'][['CustomerID', 'Req_SensiblePower_kW', 'Req_StaticPressure_Pa']].to_csv(index=False).encode('utf-8')
+    st.download_button(
+        "💡 Export R&D Gaps (Lacks)",
+        csv_lacks,
+        "market_gaps.csv",
+        "text/csv",
+        help="Target specifications for our next generation of high-performance units."
+    )
+
+st.write("---")
+show_lacks = st.toggle("View market gaps (Lacks) in-browser")
+
+if show_lacks:
+    st.write("These are the spots where we're losing out—customers have needs we just don't meet yet.")
+    st.table(res['lacks'].head(15)[['CustomerID', 'Req_SensiblePower_kW', 'Req_StaticPressure_Pa']])
+
+show_excess = st.toggle("Show me the waste (Excess)")
+if show_excess:
+    st.write("These are the models I'd suggest retiring first. They don't have a unique 'home' in our target market.")
+    st.table(res['excess'].head(15)[['ProductID', 'Cap_SensiblePower_kW', 'UnitCost']])
+
+st.write("---")
+st.markdown("<div style='text-align: center; color: #95a5a6; font-size: 0.9rem;'>Analysis performed on 500 segments and 50 historical variants.</div>", unsafe_allow_html=True)
