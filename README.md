@@ -20,16 +20,10 @@ The core objective is to link each product variant to the specific customer prof
 
 1. Install dependencies:
    ```bash
+   git clone https://github.com/talktoarusharya/Product-portfolio-rationalisation-in-Manufacturing
+   cd Product-portfolio-rationalisation-in-Manufacturing
    pip install -r requirements.txt
-   ```
-
-2. Generate sample data (optional):
-   ```bash
    python generate_data.py
-   ```
-
-3. Run the application:
-   ```bash
    streamlit run app.py
    ```
 
