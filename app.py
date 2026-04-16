@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import requests
 from streamlit_lottie import st_lottie
-from logic.engine import analyze_coverage
+from logic import analyze_coverage
 
 # --- 🚀 Performance Optimization (Skill 6) ---
 @st.cache_data
